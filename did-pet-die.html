@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Did the Pet Die? 🐾</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #1a1a1a;
+            --bg-card: #2a2a2a;
+            --accent-yellow: #ffd700;
+            --accent-red: #ff4757;
+            --accent-green: #26de81;
+            --text-primary: #f5f5f5;
+            --text-muted: #a0a0a0;
+            --shadow: rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier Prime', monospace;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d1b1b 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.1) 2px,
+                    rgba(0, 0, 0, 0.1) 4px
+                );
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: slideDown 0.6s ease-out 0.2s backwards;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3rem, 10vw, 5rem);
+            color: var(--accent-yellow);
+            text-shadow: 
+                4px 4px 0 var(--accent-red),
+                8px 8px 20px rgba(255, 71, 87, 0.4);
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            line-height: 1;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .paw-icon {
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+            margin: 0 10px;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .search-card {
+            background: var(--bg-card);
+            border: 3px solid var(--accent-yellow);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 
+                0 10px 40px var(--shadow),
+                0 0 0 1px rgba(255, 215, 0, 0.1) inset;
+            animation: scaleIn 0.6s ease-out 0.4s backwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .search-form {
+            position: relative;
+            z-index: 1;
+        }
+
+        label {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 18px 20px;
+            font-family: 'Courier Prime', monospace;
+            font-size: 1.1rem;
+            background: #1a1a1a;
+            border: 2px solid var(--text-muted);
+            border-radius: 8px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent-yellow);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, var(--accent-yellow) 0%, #ffed4e 100%);
+            color: #1a1a1a;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 4px 15px rgba(255, 215, 0, 0.3),
+                0 0 0 3px rgba(255, 215, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 6px 25px rgba(255, 215, 0, 0.5),
+                0 0 0 3px rgba(255, 215, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 8px;
+            animation: slideUp 0.5s ease-out;
+            display: none;
+            border-left: 5px solid;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result.safe {
+            background: rgba(38, 222, 129, 0.1);
+            border-color: var(--accent-green);
+        }
+
+        .result.warning {
+            background: rgba(255, 71, 87, 0.1);
+            border-color: var(--accent-red);
+        }
+
+        .result.neutral {
+            background: rgba(160, 160, 160, 0.1);
+            border-color: var(--text-muted);
+        }
+
+        .result-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+            animation: bounce 0.6s ease-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .result h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .result p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 215, 0, 0.2);
+            border-top-color: var(--accent-yellow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #1a1a1a;
+            border: 2px solid var(--accent-yellow);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 10;
+            box-shadow: 0 10px 30px var(--shadow);
+            display: none;
+        }
+
+        .suggestions.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            gap: 15px;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(255, 215, 0, 0.1);
+            transform: translateX(5px);
+        }
+
+        .suggestion-poster {
+            width: 50px;
+            height: 75px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 2px solid var(--accent-yellow);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+
+        .suggestion-poster.loading {
+            background: linear-gradient(
+                90deg,
+                rgba(255, 215, 0, 0.1) 0%,
+                rgba(255, 215, 0, 0.2) 50%,
+                rgba(255, 215, 0, 0.1) 100%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .suggestion-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .suggestion-title {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .suggestion-year {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .suggestions-loading {
+            padding: 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .suggestions-loading .mini-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-top-color: var(--accent-yellow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            animation: fadeIn 0.8s ease-out 0.6s backwards;
+        }
+
+        footer a {
+            color: var(--accent-yellow);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #ffed4e;
+        }
+
+        @media (max-width: 768px) {
+            .search-card {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                <span class="paw-icon">🐾</span>
+                Did the Pet Die?
+                <span class="paw-icon">🐾</span>
+            </h1>
+            <p class="subtitle">Check if your heart is safe before watching</p>
+        </header>
+
+        <div class="search-card">
+            <form class="search-form" id="searchForm">
+                <label for="movieInput">Movie Name:</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="movieInput" 
+                        placeholder="e.g. Marley & Me, Hachi, John Wick..."
+                        required
+                        autocomplete="off"
+                    />
+                    <div class="suggestions" id="suggestions"></div>
+                </div>
+                <button type="submit" id="submitBtn">
+                    <span>Check Movie</span>
+                </button>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing the movie...</p>
+            </div>
+
+            <div class="result" id="result"></div>
+        </div>
+
+        <footer>
+            <p>💛 Made with love by animal lovers 💛</p>
+            <p><small>This site uses AI to analyze available information about movies</small></p>
+        </footer>
+    </div>
+
+    <script>
+        const form = document.getElementById('searchForm');
+        const movieInput = document.getElementById('movieInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+        const suggestions = document.getElementById('suggestions');
+
+        let debounceTimer;
+        let currentSuggestions = [];
+
+        // Listener to fetch suggestions while typing
+        movieInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            
+            clearTimeout(debounceTimer);
+            
+            if (query.length < 3) {
+                suggestions.classList.remove('show');
+                suggestions.innerHTML = '';
+                return;
+            }
+
+            debounceTimer = setTimeout(() => {
+                fetchSuggestions(query);
+            }, 400);
+        });
+
+        // Close suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.input-wrapper')) {
+                suggestions.classList.remove('show');
+            }
+        });
+
+        // Fetch movie suggestions
+        async function fetchSuggestions(query) {
+            suggestions.innerHTML = `
+                <div class="suggestions-loading">
+                    <div class="mini-spinner"></div>
+                    <p>Searching for movies...</p>
+                </div>
+            `;
+            suggestions.classList.add('show');
+
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-20250514',
+                        max_tokens: 1000,
+                        messages: [{
+                            role: 'user',
+                            content: `Based on the search "${query}", suggest exactly 3 movies that best match this search. Prioritize recent movies (2020-2025) whenever possible. Respond ONLY in JSON format, with no additional text:
+
+{
+  "suggestions": [
+    {
+      "title": "Complete Movie Title",
+      "year": "Release year",
+      "searchTerm": "Movie title in English (original title for international films)"
+    }
+  ]
+}
+
+Rules:
+- Suggest real, well-known movies
+- Prioritize movies from 2020-2025 when they match the search
+- If older classic movies are better matches, include them too
+- Use the original English title in the searchTerm field
+- Include the release year
+- Return exactly 3 suggestions
+- RESPOND ONLY WITH JSON, no markdown`
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                let resultText = data.content
+                    .filter(item => item.type === 'text')
+                    .map(item => item.text)
+                    .join('');
+
+                resultText = resultText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                const suggestionsData = JSON.parse(resultText);
+                
+                if (suggestionsData.suggestions && suggestionsData.suggestions.length > 0) {
+                    currentSuggestions = suggestionsData.suggestions;
+                    displaySuggestions(currentSuggestions);
+                } else {
+                    suggestions.innerHTML = `
+                        <div class="suggestions-loading">
+                            <p>No movies found</p>
+                        </div>
+                    `;
+                }
+
+            } catch (error) {
+                console.error('Error fetching suggestions:', error);
+                suggestions.innerHTML = `
+                    <div class="suggestions-loading">
+                        <p>Could not load suggestions</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Display suggestions with posters
+        async function displaySuggestions(movies) {
+            if (!movies || movies.length === 0) {
+                suggestions.classList.remove('show');
+                return;
+            }
+
+            suggestions.innerHTML = movies.map((movie, index) => `
+                <div class="suggestion-item" data-index="${index}">
+                    <div class="suggestion-poster loading" id="poster-${index}"></div>
+                    <div class="suggestion-info">
+                        <div class="suggestion-title">${movie.title}</div>
+                        <div class="suggestion-year">${movie.year}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            suggestions.classList.add('show');
+
+            // Add event listeners
+            document.querySelectorAll('.suggestion-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const index = item.dataset.index;
+                    selectSuggestion(currentSuggestions[index]);
+                });
+            });
+
+            // Load posters
+            movies.forEach((movie, index) => {
+                fetchPoster(movie.searchTerm, movie.year, index);
+            });
+        }
+
+        // Fetch movie poster via OMDB API
+        async function fetchPoster(searchTerm, year, index) {
+            const apiKey = '3e5baa1d'; // Public OMDB API Key
+            const posterElement = document.getElementById(`poster-${index}`);
+            
+            if (!posterElement) return;
+            
+            try {
+                const response = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}&t=${encodeURIComponent(searchTerm)}&y=${year}`);
+                const data = await response.json();
+                
+                if (data.Poster && data.Poster !== 'N/A') {
+                    const img = document.createElement('img');
+                    img.src = data.Poster;
+                    img.alt = searchTerm;
+                    img.className = 'suggestion-poster';
+                    img.onerror = () => {
+                        // Fallback if image fails to load
+                        posterElement.classList.remove('loading');
+                        posterElement.style.display = 'flex';
+                        posterElement.style.alignItems = 'center';
+                        posterElement.style.justifyContent = 'center';
+                        posterElement.style.fontSize = '2rem';
+                        posterElement.textContent = '🎬';
+                    };
+                    posterElement.replaceWith(img);
+                } else {
+                    // Fallback: movie emoji
+                    posterElement.classList.remove('loading');
+                    posterElement.style.display = 'flex';
+                    posterElement.style.alignItems = 'center';
+                    posterElement.style.justifyContent = 'center';
+                    posterElement.style.fontSize = '2rem';
+                    posterElement.textContent = '🎬';
+                }
+            } catch (error) {
+                console.error('Error loading poster:', error);
+                if (posterElement) {
+                    posterElement.classList.remove('loading');
+                    posterElement.style.display = 'flex';
+                    posterElement.style.alignItems = 'center';
+                    posterElement.style.justifyContent = 'center';
+                    posterElement.style.fontSize = '2rem';
+                    posterElement.textContent = '🎬';
+                }
+            }
+        }
+
+        // Select a suggestion
+        function selectSuggestion(movie) {
+            movieInput.value = movie.title;
+            suggestions.classList.remove('show');
+            suggestions.innerHTML = '';
+            movieInput.focus();
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const movieName = movieInput.value.trim();
+            
+            if (!movieName) return;
+
+            // Close suggestions
+            suggestions.classList.remove('show');
+            suggestions.innerHTML = '';
+
+            // Reset state
+            result.classList.remove('show');
+            loading.classList.add('show');
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-20250514',
+                        max_tokens: 1000,
+                        messages: [{
+                            role: 'user',
+                            content: `You are a cinema expert who helps sensitive people avoid movies where pets or animals die. Analyze the movie "${movieName}" and respond ONLY in JSON format, with no additional text, following this exact format:
+
+{
+  "status": "safe" or "warning" or "unknown",
+  "title": "Movie Title",
+  "summary": "A brief and respectful description about whether any animals die in the movie. If yes, be gentle but honest. If not, reassure the user. If you don't know, be honest about it.",
+  "details": "Additional relevant details, if any"
+}
+
+Rules:
+- Use "safe" if no animals die
+- Use "warning" if any animals die or suffer
+- Use "unknown" if you're not sure or don't know the movie
+- Be empathetic and respectful with the feelings of animal lovers
+- RESPOND ONLY WITH JSON, no markdown, no extra explanations`
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                let resultText = data.content
+                    .filter(item => item.type === 'text')
+                    .map(item => item.text)
+                    .join('');
+
+                // Clean possible markdown
+                resultText = resultText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                
+                const resultData = JSON.parse(resultText);
+                displayResult(resultData);
+
+            } catch (error) {
+                console.error('Error:', error);
+                displayError();
+            } finally {
+                loading.classList.remove('show');
+                submitBtn.disabled = false;
+            }
+        });
+
+        function displayResult(data) {
+            const icons = {
+                safe: '✅',
+                warning: '⚠️',
+                unknown: '❓'
+            };
+
+            const titles = {
+                safe: 'Safe Movie! 💚',
+                warning: 'Warning! ❤️',
+                unknown: 'Uncertain Information'
+            };
+
+            result.className = 'result show ' + data.status;
+            result.innerHTML = `
+                <span class="result-icon">${icons[data.status]}</span>
+                <h3>${titles[data.status]}</h3>
+                <p><strong>${data.title}</strong></p>
+                <p>${data.summary}</p>
+                ${data.details ? `<p><em>${data.details}</em></p>` : ''}
+            `;
+        }
+
+        function displayError() {
+            result.className = 'result show neutral';
+            result.innerHTML = `
+                <span class="result-icon">😔</span>
+                <h3>Oops!</h3>
+                <p>We couldn't analyze the movie at the moment. Please try again in a few moments.</p>
+            `;
+        }
+
+        // Easter egg: auto focus on field
+        movieInput.focus();
+    </script>
+</body>
+</html>
